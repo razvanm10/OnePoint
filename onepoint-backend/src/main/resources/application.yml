@@ -1,0 +1,46 @@
+server:
+  port: 9090
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: myusername
+    password: mypassword
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQL94Dialect
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8089/auth/realms/onepoint
+      client:
+        registration:
+          keycloak:
+            client-id: resource-server
+            authorization-grant-type: authorization_code
+            scope: openid
+
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8089/auth/realms/onepoint
+            user-name-attribute: preferred_username
+  mvc:
+    dispatch-options-request: true
+
+management:
+  endpoints:
+    web:
+      cors:
+        allowed-origins: "*"
+
+keycloak:
+  use-resource-role-mappings: false
+  resource: resource-server
+  principal-attribute: preferred_username
+  realm: onepoint
+  ssl-required: external
+  public-client: true
+  auth-server-url: http://localhost:8089/auth/realms/onepoint

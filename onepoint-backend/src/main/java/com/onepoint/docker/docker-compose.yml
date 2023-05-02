@@ -1,0 +1,31 @@
+version: '3'
+
+
+services:
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: pc_database
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    ports:
+      - 5433:5432
+
+  keycloak:
+    image: jboss/keycloak:16.0.0
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: postgres
+      DB_DATABASE: pc_database
+      DB_SCHEMA: public
+      DB_USER: root
+      DB_PASSWORD: root
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+    depends_on:
+      - postgres
+    ports:
+      - 8089:8080
