@@ -5,9 +5,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
-@EnableJpaRepositories(basePackages = {"com.okta.java.resourceserver.repository"})
+@EnableJpaRepositories(basePackages = {"com.onepoint.repository"})
 public class ResourceServerApplication {
 
 	@Bean

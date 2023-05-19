@@ -1,23 +1,48 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+*.iml
+.settings
+target
+.project
+.classpath
+dist
 
-# dependencies
-/node_modules
-/.pnp
-.pnp.js
+# Numerous always-ignore extensions
+*.bak
+*.patch
+*.diff
+*.err
 
-# testing
-/coverage
+# temp file for git conflict merging
+*.orig
+*.log
+*.rej
+*.swo
+*.swp
+*.zip
+*.vi
+*~
+*.sass-cache
+*.tmp.html
+*.dump
 
-# production
-/build
-
-# misc
+# OS or Editor folders
 .DS_Store
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+._*
+.cache
+.tmproj
+*.esproj
+*.sublime-project
+*.sublime-workspace
+nbproject
+thumbs.db
 
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+# Folders to ignore
+.idea
+.hg
+.svn
+.CVS
+node_modules/
+jscoverage_lib/
+src/main/webapp/WEB-INF/ftl/rsrc/
+src/main/webapp/rsrc/dist/
+src/main/resources/application-local.properties
+webpack-assets.json

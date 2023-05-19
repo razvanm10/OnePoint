@@ -36,11 +36,11 @@ management:
       cors:
         allowed-origins: "*"
 
-keycloak:
-  use-resource-role-mappings: false
-  resource: resource-server
-  principal-attribute: preferred_username
-  realm: onepoint
-  ssl-required: external
-  public-client: true
-  auth-server-url: http://localhost:8089/auth/realms/onepoint
+#keycloak:
+#  use-resource-role-mappings: false
+#  resource: resource-server
+#  principal-attribute: preferred_username
+#  realm: onepoint
+#  ssl-required: external
+#  public-client: true
+#  auth-server-url: http://localhost:8089/auth/realms/onepoint

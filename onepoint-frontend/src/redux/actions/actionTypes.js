@@ -1,0 +1,6 @@
+export const ADD_WORKLOG = 'ADD_TODO';
+export const DELETE_WORKLOG = 'DELETE_TODO';
+export const UPDATE_WORKLOG = 'UPDATE_TODO';
+export const EDIT_WORKLOG = 'EDIT_TODO';
+export const CLEAR_ALL_WORKLOGS = 'CLEAR_ALL_TODO';
+export const MARK_COMPLETED = 'MARK_COMPLETED';
