@@ -1,7 +1,7 @@
 import React from 'react';
 import {Container} from "@material-ui/core";
 
-function Employee(props) {
+function EmployeeView(props) {
     return (
         <Container>
             Employee View
@@ -9,4 +9,4 @@ function Employee(props) {
     );
 }
 
-export default Employee;
+export default EmployeeView;

@@ -55,8 +55,6 @@ public class SecurityController {
                     return EmployeeRoles.EMPLOYEE.ordinal();
                 }).collect(Collectors.toList())
         );
-        System.out.println(EmployeeRoles.EMPLOYEE.ordinal());
-        System.out.println(EmployeeRoles.MANAGER.ordinal());
         if (employeesRepository.findByKeycloakId(employee.getKeycloakId()) == null) {
             employeesRepository.save(employee);
         } else {
@@ -91,5 +89,6 @@ public class SecurityController {
         }
         return employee;
     }
+
 
 }

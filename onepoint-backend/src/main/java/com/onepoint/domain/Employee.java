@@ -1,5 +1,6 @@
 package com.onepoint.domain;
 
+import com.onepoint.enums.EmployeePositions;
 import com.onepoint.enums.EmployeeRoles;
 
 import javax.persistence.*;
@@ -23,6 +24,12 @@ public class Employee {
 
     @ElementCollection
     private List<Integer> roles;
+
+    @Column
+    private EmployeePositions position;
+
+    @Column
+    private Integer managerId;
 
     public Employee(){};
 
@@ -66,28 +73,45 @@ public class Employee {
         this.roles = roles;
     }
 
+    public Integer getManagerId() {
+        return managerId;
+    }
+
+    public void setManagerId(Integer managerId) {
+        this.managerId = managerId;
+    }
+
+    public EmployeePositions getPosition() {
+        return position;
+    }
+
+    public void setPosition(EmployeePositions position) {
+        this.position = position;
+    }
+
+
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Employee employee = (Employee) o;
-        return Objects.equals(id, employee.id) && Objects.equals(name, employee.name) && Objects.equals(keycloakId, employee.keycloakId) && Objects.equals(roles, employee.roles);
+        return Objects.equals(id, employee.id) && Objects.equals(name, employee.name) && Objects.equals(keycloakId, employee.keycloakId) && Objects.equals(roles, employee.roles) && position == employee.position;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, keycloakId, roles);
+        return Objects.hash(id, name, keycloakId, roles, position);
     }
-
 
     @Override
     public String toString() {
         return "Employee{" +
-                "id='" + id + '\'' +
+                "id=" + id +
                 ", name='" + name + '\'' +
                 ", keycloakId=" + keycloakId +
                 ", roles=" + roles +
+                ", position=" + position +
                 '}';
     }
 }

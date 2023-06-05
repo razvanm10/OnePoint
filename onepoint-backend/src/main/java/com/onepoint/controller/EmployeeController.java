@@ -1,10 +1,14 @@
 package com.onepoint.controller;
 
+import com.onepoint.dto.EmployeeDTO;
+import com.onepoint.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/employees")
@@ -12,6 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin(exposedHeaders = {"Access-Control-Allow-Origin","Access-Control-Allow-Credentials"})
 public class EmployeeController {
 
+    private final EmployeeService employeeService;
 
+    @GetMapping
+    public List<EmployeeDTO> findAll() {
+        return employeeService.findAllEmployees();
+    }
 
 }

@@ -22,4 +22,8 @@ public class EmployeeDTO {
 
     private List<Integer> roles;
 
+    private Integer position;
+
+    private Integer managerId;
+
 }
