@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,6 +21,10 @@ public class EmployeeService {
 
     public Optional<EmployeeDTO> findById(Long id) {
         return employeesRepository.findById(id).map(employeeMapper::toDTO);
+    }
+
+    public EmployeeDTO findByKeycloakId(UUID keycloakId) {
+        return employeeMapper.toDTO(employeesRepository.findByKeycloakId(keycloakId));
     }
 
     public List<EmployeeDTO> findAllEmployees() {

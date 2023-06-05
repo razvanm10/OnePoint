@@ -14,6 +14,7 @@ let initOptions = {
 function App() {
 
     const [authenticated, setAuthenticated] = useState(false);
+    const [keycloakInstance, setKeycloakInstance] = useState(new Keycloak(initOptions));
     const [principal, setPrincipal] = useState(null);
     const [employees, setEmployees] = useState(null);
 
@@ -25,6 +26,7 @@ function App() {
                 window.location.reload();
             } else {
                 setAuthenticated(true);
+                setKeycloakInstance(keycloak);
             }
             setTimeout(() => {
                 keycloak.updateToken(70).then((refreshed) => {
@@ -62,15 +64,24 @@ function App() {
                     'Content-Type': 'application/json',
                 }
             }).then(resp => resp.json()).then(
-                data => {
-                    try {
-                        setPrincipal(data);
-                    } catch (e) {
-                        console.log("invalid response")
+                data => data["keycloakId"]
+            ).then(keycloakId => {
+                fetch("http://localhost:9090/employees/keycloak/" + keycloakId, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + keycloak.token,
+                        'Access-Control-Allow-Origin': 'http://localhost:3000',
+                        'Content-Type': 'application/json',
                     }
-                }
-            ).catch(e => console.log("couldn't fetch data"))
+                }).then(resp => resp.json())
+                    .then(data => {
+                        console.log(data)
+                    })
+            })
+                .catch(e => console.log("couldn't fetch data"))
                 .then(() => console.log(principal))
+
+
 
         }).then(() => {
         })
@@ -81,7 +92,8 @@ function App() {
     }, []);
 
     return (
-        <ManagerView myTeam={employees}/>
+        // <ManagerView myTeam={employees}/>
+        <ManagerView logout={() => keycloakInstance.logout()} myTeam={employees}/>
     );
 
 }

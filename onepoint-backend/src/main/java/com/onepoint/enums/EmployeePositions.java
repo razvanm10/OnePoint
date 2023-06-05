@@ -6,5 +6,6 @@ public enum EmployeePositions {
     ScrumMaster,
     ProductOwner,
     Tester,
-    FullstackDeveloper
+    FullstackDeveloper,
+    Manager
 }

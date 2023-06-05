@@ -3,12 +3,11 @@ package com.onepoint.controller;
 import com.onepoint.dto.EmployeeDTO;
 import com.onepoint.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/employees")
@@ -21,6 +20,11 @@ public class EmployeeController {
     @GetMapping
     public List<EmployeeDTO> findAll() {
         return employeeService.findAllEmployees();
+    }
+
+    @GetMapping("keycloak/{keycloakId}")
+    public ResponseEntity<EmployeeDTO> findByKeycloakId(@PathVariable UUID keycloakId) {
+        return ResponseEntity.ok(employeeService.findByKeycloakId(keycloakId));
     }
 
 }

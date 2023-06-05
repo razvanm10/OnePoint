@@ -1,39 +1,77 @@
 import React from 'react';
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
-import {Divider, Paper, Stack} from "@mui/material";
+import {CircularProgress, Container, Divider, Paper, Stack} from "@mui/material";
 import OnepointAppBar from "../components/OnepointAppBar";
 import {LocalizationProvider} from "@mui/x-date-pickers";
-import Box from "@mui/material/Box";
 import EmployeesList from "../components/EmployeeList";
+import EmployeeClientWorkedHoursChart from "../components/EmployeeClientWorkedHoursChart";
+import WorklogsList from "../components/WorklogsList";
 
-function ManagerView({myTeam}) {
-
+function ManagerView({myTeam, logout}) {
     return (
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <OnepointAppBar/>
-            <Stack
-                direction="column"
-                spacing={1}
-                alignItems="center"
-                justifyContent="space-between"
-                sx={{backgroundColor: 'secondary.main', paddingTop: 2, paddingBottom: 5}}
-            >
+        !myTeam ? (
+                <div
+                    style={{
+                        position: 'absolute',
+                        left: '50%',
+                        top: '50%',
+                        transform: 'translate(-50%, -50%)'
+                    }}
+                >
+                    <CircularProgress/>
+                </div>
+        ) : (
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <OnepointAppBar logout={logout}/>
+                <Stack
+                    direction="column"
+                    spacing={1}
+                    alignItems="center"
+                    sx={{backgroundColor: 'secondary.main', paddingTop: 2, paddingBottom: 5}}
+                >
 
-                <Stack direction="row"
-                       divider={<Divider orientation="vertical" flexItem/>}
-                       spacing={10}>
+                    <Stack direction="column"
+                           divider={<Divider orientation="vertical" flexItem/>}
+                           spacing={3}>
 
-                    <Stack spacing={1} direction="column" divider={<Divider orientation="vertical" flexItem/>}>
-                        <Paper elevation={10}>
-                            <EmployeesList employees={myTeam}/>
-                        </Paper>
-                        <Box sx={{height: 10, backgroundColor: 'primary.input'}}>
-                        </Box>
+                        <Stack direction="row"
+
+                               justifyContent="space-between"
+                               spacing={3}
+                        >
+                            <Stack direction="column" divider={<Divider orientation="vertical" flexItem/>}
+                                   justifyContent="space-evenly">
+                                <h3 color="primary.main">My Team</h3>
+                                <Paper elevation={10}>
+                                    <EmployeesList employees={myTeam}/>
+                                </Paper>
+
+                            </Stack>
+                            <Paper elevation={10}>
+                                <WorklogsList />
+                            </Paper>
+                        </Stack>
+
+                        <Stack spacing={1} direction="column" divider={<Divider orientation="vertical" flexItem/>}
+                               justifyContent="space-evenly" >
+
+                            <Paper elevation={10} sx={{
+                                minHeight: 200,
+                                minWidth: 1000
+                            }}>
+                                <EmployeeClientWorkedHoursChart data={[
+                                    {"task": "Task 1", "hours": 10},
+                                    {"task": "Task 2", "hours": 15},
+                                    {"task": "Task 3", "hours": 8}
+                                ]}/>
+                            </Paper>
+                        </Stack>
                     </Stack>
                 </Stack>
-            </Stack>
 
-        </LocalizationProvider>
+            </LocalizationProvider>
+        )
+
     );
 }
 

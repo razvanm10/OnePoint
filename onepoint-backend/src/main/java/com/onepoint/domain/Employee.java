@@ -40,7 +40,6 @@ public class Employee {
         this.roles = roles;
     }
 
-
     public Long getId() {
         return id;
     }

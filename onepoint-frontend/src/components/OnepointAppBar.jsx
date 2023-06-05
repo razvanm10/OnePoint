@@ -6,8 +6,12 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import LogoutIcon from '@mui/icons-material/Logout';
+import {Stack} from "@mui/material";
+import AccountDropdown from "./AccountButton";
 
-export default function OnepointAppBar() {
+export default function OnepointAppBar({logout}) {
     return (
         <Box sx={{ flexGrow: 1 }}>
             <AppBar position="static">
@@ -24,6 +28,7 @@ export default function OnepointAppBar() {
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1, color: "primary.input"}}>
                         OnePoint
                     </Typography>
+                    <AccountDropdown logout={logout}/>
                 </Toolbar>
             </AppBar>
         </Box>
