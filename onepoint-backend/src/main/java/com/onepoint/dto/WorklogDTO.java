@@ -16,7 +16,7 @@ public class WorklogDTO {
 
     private Long id;
 
-    private ZonedDateTime day;
+    private String day;
 
     private Integer start;
 
@@ -27,6 +27,8 @@ public class WorklogDTO {
     private Long employeeId;
 
     private Long customerId;
+
+    private Long projectId;
 
     public void overlaps(WorklogDTO other) throws IllegalArgumentException {
         //11:10-12:25 ->add-> 11:45-12:10 (second overlaps first)

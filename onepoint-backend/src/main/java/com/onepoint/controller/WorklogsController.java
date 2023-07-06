@@ -23,14 +23,13 @@ public class WorklogsController {
     @PostMapping(value = "/add",
             consumes = {MediaType.APPLICATION_JSON},
             produces = {MediaType.APPLICATION_JSON})
-    public ResponseEntity<Void> addNewWorklogForEmployee(@RequestBody WorklogDTO worklogDTO) {
+    public ResponseEntity<Object> addNewWorklogForEmployee(@RequestBody WorklogDTO worklogDTO) {
         try {
             worklogsService.save(worklogDTO);
             return ResponseEntity.created(URI
-                    .create(String.format("/worklog/%s", worklogDTO.getDescription()))).build();
+                    .create(String.format("/worklog/%s", worklogDTO))).build();
         } catch (IllegalArgumentException e) {
-            System.out.println("I'm here");
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
@@ -46,11 +45,22 @@ public class WorklogsController {
         }
     }
 
+    @GetMapping(value = "/{employeeId}/{specifiedDay}",
+            consumes = {MediaType.APPLICATION_JSON},
+            produces = {MediaType.APPLICATION_JSON})
+    @CrossOrigin(origins = {"http://localhost:3000"})
+    public ResponseEntity<Double> findAllWorklogsForEmployeeByDay(@PathVariable Long employeeId, @PathVariable String specifiedDay) {
+        try {
+            return ResponseEntity.ok(worklogsService.findAllWorklogsGrouppedByDayOfMonth(employeeId, specifiedDay));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     @GetMapping(value = "/",
             consumes = {MediaType.APPLICATION_JSON},
             produces = {MediaType.APPLICATION_JSON})
     @CrossOrigin(origins = {"http://localhost:3000"})
-
     public ResponseEntity<List<WorklogDTO>> findAll() {
         return ResponseEntity.ok(List.of());
     }

@@ -1,7 +1,5 @@
 package com.onepoint.domain;
 
-import org.springframework.lang.Nullable;
-
 import javax.persistence.*;
 import java.time.ZonedDateTime;
 import java.util.Objects;
@@ -22,7 +20,7 @@ public class Worklog {
     private Integer stop;
 
     @Column
-    private ZonedDateTime day;
+    private String day;
 
     @Column
     private String description;
@@ -30,8 +28,26 @@ public class Worklog {
     @OneToOne
     private Employee employee;
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "customer_id")
     private Customer customer;
+
+    @ManyToOne
+    @JoinColumn(name = "project_id")
+    private Project project;
+
+    public Worklog() {}
+
+    public Worklog(Long id, Integer start, Integer stop, String day, String description, Employee employee, Customer customer, Project project) {
+        this.id = id;
+        this.start = start;
+        this.stop = stop;
+        this.day = day;
+        this.description = description;
+        this.employee = employee;
+        this.customer = customer;
+        this.project = project;
+    }
 
     public Employee getEmployee() {
         return employee;
@@ -49,11 +65,11 @@ public class Worklog {
         this.customer = customer;
     }
 
-    public ZonedDateTime getDay() {
+    public String getDay() {
         return day;
     }
 
-    public void setDay(ZonedDateTime day) {
+    public void setDay(String day) {
         this.day = day;
     }
 
@@ -89,6 +105,13 @@ public class Worklog {
         this.description = description;
     }
 
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -103,8 +126,10 @@ public class Worklog {
         return Objects.hash(id, start, stop, day, description, employee, customer);
     }
 
-    public boolean overlaps(Worklog other) {
+    public void overlaps(Worklog other) {
         //11:10-12:25 ->add-> 11:45-12:10 (second overlaps first)
-        return other.start >= this.start && other.stop < this.stop;
+        if (other.start >= this.start && other.stop < this.stop) {
+            throw new IllegalArgumentException("Hours are overlapping |" + this.toString() + "  :  " + other.toString());
+        }
     }
 }

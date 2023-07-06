@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useContext, useState} from 'react';
 import {DatePicker, StaticTimePicker} from "@mui/x-date-pickers";
 import dayjs from 'dayjs';
 import {
@@ -14,8 +14,14 @@ import {
 } from "@mui/material";
 import worklogs from "../worklogs";
 import Box from "@mui/material/Box";
+import {AuthContext} from "../context/AuthContext";
+import {WorklogsContext} from "../context/WorklogsContext";
 
 const FormComponent = ({updateList}) => {
+
+    const { principal } = useContext(AuthContext);
+    const { addNewWorklog } = useContext(WorklogsContext);
+
 
     const [formData, setFormData] = useState({
         description: '',
@@ -43,19 +49,20 @@ const FormComponent = ({updateList}) => {
         setFormData((prevFormData) => ({ ...prevFormData, [name]: hour }));
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
         if (formData.start > formData.stop) {
             console.log("start bigger than stop")
         }
-        worklogs.push({
-            description: formData.description,
-            start: (new Date(Date.parse(formData.start.toString()))).getHours().toString() + ":" + (new Date(Date.parse(formData.start.toString()))).getMinutes().toString(),
-            stop: (new Date(Date.parse(formData.stop.toString()))).getHours().toString() + ":" + (new Date(Date.parse(formData.stop.toString()))).getMinutes().toString(),
+
+        await addNewWorklog({
             day: formData.day,
-            customer: formData.customer,
-        })
-        updateList();
+            description: formData.description,
+            start: formData.start,
+            stop: formData.stop,
+            customerId: 2,
+            employeeId: principal.id
+        });
     };
 
     return (
@@ -72,6 +79,7 @@ const FormComponent = ({updateList}) => {
                             <StaticTimePicker
                                 sx={{backgroundColor: 'primary.input'}}
                                 ampm={false}
+                                minutesStep={15}
                                 defaultValue={dayjs('2022-04-17T15:30')}
                                 onChange={(date) => handleStartHourChange( 'start', date)}
                             />
@@ -81,6 +89,7 @@ const FormComponent = ({updateList}) => {
                             <StaticTimePicker
                                 sx={{backgroundColor: 'primary.input'}}
                                 ampm={false}
+                                minutesStep={15}
                                 defaultValue={dayjs('2022-04-17T15:30')}
                                 onChange={(date) => handleStopHourChange( 'stop', date)}
                             />

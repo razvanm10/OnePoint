@@ -1,10 +1,28 @@
-import React, {useState} from 'react';
+import React from 'react';
 import Card from '@mui/material/Card';
 import Grid from '@mui/material/Grid';
-import worklogs from "../worklogs";
 import {CircularProgress, List, Paper} from "@mui/material";
-import WorkslipCard from "./WorkslipCard";
 import EmployeeCard from "./EmployeeCard";
+
+const mapPosition = (positionAsNumber) => {
+  switch (positionAsNumber) {
+      // BackendDeveloper(0),
+      //     FrontendDeveloper(1),
+      //     ScrumMaster(2),
+      //     ProductOwner(3),
+      //     Tester(4),
+      //     FullstackDeveloper(5),
+      //     Manager(6);
+      case 0: return "Backend Developer";
+      case 1: return "Frontend Developer";
+      case 2: return "Scrum Master";
+      case 3: return "Product Owner";
+      case 4: return "Tester";
+      case 5: return "Fullstack Developer";
+      case 6: return "Manager";
+      default: return "";
+  }
+}
 
 const EmployeesList = ({employees}) => {
 
@@ -24,7 +42,10 @@ const EmployeesList = ({employees}) => {
                 employees !== null ? employees.map(emp =>
                     <Grid item sx={{paddingTop: 1, paddingBottom: 1, paddingLeft: 2, paddingRight: 2}}>
                         <Paper elevation={5}>
-                            <EmployeeCard name={emp.name} position={"position"}/>
+                            <EmployeeCard
+                                name={emp.name}
+                                position={mapPosition(emp.currentPosition)}
+                            />
                         </Paper>
                     </Grid>
                 ) : <CircularProgress/>}

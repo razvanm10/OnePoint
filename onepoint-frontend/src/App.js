@@ -1,101 +1,38 @@
-import './App.css';
-import React, {useEffect, useState} from "react";
-import ManagerView from "./view/ManagerView";
-import Keycloak from "keycloak-js";
+import React, { useContext } from 'react';
+import { AuthContext } from './context/AuthContext';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import ManagerView from './view/ManagerView';
+import MyTeamView from './view/MyTeamView';
+import UnresolvedDiscussionsView from './view/UnresolvedDiscussionView';
+import {DndProvider} from "react-dnd";
+import {HTML5Backend} from "react-dnd-html5-backend";
+import {EmployeeContextProvider} from "./context/EmployeeContext";
 
-let initOptions = {
-    realm: 'onepoint',
-    url: 'http://localhost:8089/auth/',
-    clientId: 'resource-client',
-    onLoad: 'login-required',
-    KeycloakResponseType: 'code'
-}
+const App = () => {
+    const { authenticated } = useContext(AuthContext);
 
-function App() {
-
-    const [authenticated, setAuthenticated] = useState(false);
-    const [keycloakInstance, setKeycloakInstance] = useState(new Keycloak(initOptions));
-    const [principal, setPrincipal] = useState(null);
-    const [employees, setEmployees] = useState(null);
-
-    useEffect(() => {
-
-        const keycloak = new Keycloak(initOptions);
-        keycloak.init({onLoad: initOptions.onLoad, KeycloakResponseType: 'code'}).then((auth) => {
-            if (!auth) {
-                window.location.reload();
-            } else {
-                setAuthenticated(true);
-                setKeycloakInstance(keycloak);
-            }
-            setTimeout(() => {
-                keycloak.updateToken(70).then((refreshed) => {
-                    if (refreshed) {
-                        setAuthenticated(true)
-                        console.debug('Token refreshed' + refreshed);
-                    } else {
-                        console.warn('Token not refreshed, valid for '
-                            + Math.round(keycloak.tokenParsed.exp + keycloak.timeSkew - new Date().getTime() / 1000) + ' seconds');
-                    }
-                }).catch(() => {
-                    console.error('Failed to refresh token');
-                });
-
-            }, 60000)
-
-            fetch("http://localhost:9090/employees", {
-                method: 'GET',
-                headers: {
-                    'Authorization': 'Bearer ' + keycloak.token,
-                    'Access-Control-Allow-Origin': 'http://localhost:3000',
-                    'Content-Type': 'application/json',
-                }
-            }).then(resp => resp.json()).then(data => {
-                setEmployees(data)
-            })
-                .catch(e => console.log("couldn't fetch data"))
-                .then(() => console.log(employees))
-
-            fetch("http://localhost:9090/authorities", {
-                method: 'GET',
-                headers: {
-                    'Authorization': 'Bearer ' + keycloak.token,
-                    'Access-Control-Allow-Origin': 'http://localhost:3000',
-                    'Content-Type': 'application/json',
-                }
-            }).then(resp => resp.json()).then(
-                data => data["keycloakId"]
-            ).then(keycloakId => {
-                fetch("http://localhost:9090/employees/keycloak/" + keycloakId, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': 'Bearer ' + keycloak.token,
-                        'Access-Control-Allow-Origin': 'http://localhost:3000',
-                        'Content-Type': 'application/json',
-                    }
-                }).then(resp => resp.json())
-                    .then(data => {
-                        console.log(data)
-                    })
-            })
-                .catch(e => console.log("couldn't fetch data"))
-                .then(() => console.log(principal))
-
-
-
-        }).then(() => {
-        })
-            .catch(() => {
-                console.error("Authenticated Failed");
-            });
-
-    }, []);
+    if (!authenticated) {
+        return null; // or render a loading screen or a message while authenticating
+    }
 
     return (
-        // <ManagerView myTeam={employees}/>
-        <ManagerView logout={() => keycloakInstance.logout()} myTeam={employees}/>
-    );
+        <EmployeeContextProvider>
+            <DndProvider backend={HTML5Backend}>
+                <BrowserRouter>
+                    <Routes>
+                        <Route path="/" element={<ManagerView />} />
+                        <Route path="/my-team" element={
 
-}
+                                <MyTeamView/>
+                        } />
+                        <Route path="/unresolved-discussions" element={<UnresolvedDiscussionsView />} />
+                    </Routes>
+                </BrowserRouter>
+            </DndProvider>
+        </EmployeeContextProvider>
+
+
+    );
+};
 
 export default App;

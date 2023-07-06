@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(exposedHeaders = {"Access-Control-Allow-Origin","Access-Control-Allow-Credentials"})
+@CrossOrigin(exposedHeaders = {"Access-Control-Allow-Origin", "Access-Control-Allow-Credentials"})
 public class SecurityController {
 
     private final EmployeesRepository employeesRepository;
@@ -28,7 +28,7 @@ public class SecurityController {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
 
-        Map<String,Object> info = new HashMap<>();
+        Map<String, Object> info = new HashMap<>();
         info.put("name", principal.getName());
         info.put("authorities", authorities);
         info.put("tokenAttributes", principal.getTokenAttributes());
@@ -37,7 +37,7 @@ public class SecurityController {
         List<String> principalRoles = ((List<String>) ((Map) principalAttributes.get("realm_access"))
                 .get("roles"))
                 .stream()
-                .filter(el -> el.equals("EMPLOYEE") || el.equals("MANAGER"))
+                .filter(el -> el.equals("EMPLOYEE") || el.equals("MANAGER") || el.equals("HEAD_OF_ADMINISTRATION"))
                 .collect(Collectors.toList());
 
 
@@ -46,24 +46,32 @@ public class SecurityController {
         employee.setKeycloakId(UUID.fromString(info.get("name").toString()));
         employee.setRoles(principalRoles
                 .stream()
-                .filter(el -> el.equals("EMPLOYEE") || el.equals("MANAGER"))
+                .filter(el -> el.equals("EMPLOYEE") || el.equals("MANAGER") || el.equals("HEAD_OF_ADMINISTRATION"))
                 .map(el -> {
                     switch (el) {
-                        case "EMPLOYEE": return EmployeeRoles.EMPLOYEE.ordinal();
-                        case "MANAGER": return EmployeeRoles.MANAGER.ordinal();
+                        case "EMPLOYEE":
+                            return EmployeeRoles.EMPLOYEE.getNumericValue();
+                        case "MANAGER":
+                            return EmployeeRoles.MANAGER.getNumericValue();
+                        case "HEAD_OF_ADMINISTRATION":
+                            return EmployeeRoles.HEAD_OF_ADMINISTRATION.getNumericValue();
                     }
-                    return EmployeeRoles.EMPLOYEE.ordinal();
+                    return EmployeeRoles.EMPLOYEE.getNumericValue();
                 }).collect(Collectors.toList())
         );
         if (employeesRepository.findByKeycloakId(employee.getKeycloakId()) == null) {
-            employeesRepository.save(employee);
+            employee = employeesRepository.save(employee);
         } else {
-            boolean hasAllThePrincipalRoles = principalRoles.containsAll(employeesRepository
+            boolean hasAllThePrincipalRoles = new HashSet<>(principalRoles).containsAll(employeesRepository
                     .findByKeycloakId(employee.getKeycloakId())
                     .getRoles().stream().map(el -> {
                         switch (el) {
-                            case 0: return "EMPLOYEE";
-                            case 1: return "MANAGER";
+                            case 0:
+                                return "EMPLOYEE";
+                            case 1:
+                                return "MANAGER";
+                            case 2:
+                                return "HEAD_OF_ADMINISTRATION";
                         }
                         return "EMPLOYEE";
                     }).collect(Collectors.toList()));
@@ -71,13 +79,17 @@ public class SecurityController {
             if (!hasAllThePrincipalRoles) {
                 employee.setRoles(principalRoles
                         .stream()
-                        .filter(el -> el.equals("EMPLOYEE") || el.equals("MANAGER"))
+                        .filter(el -> el.equals("EMPLOYEE") || el.equals("MANAGER") || el.equals("HEAD_OF_ADMINISTRATION"))
                         .map(el -> {
                             switch (el) {
-                                case "EMPLOYEE": return EmployeeRoles.EMPLOYEE.ordinal();
-                                case "MANAGER": return EmployeeRoles.MANAGER.ordinal();
+                                case "EMPLOYEE":
+                                    return EmployeeRoles.EMPLOYEE.getNumericValue();
+                                case "MANAGER":
+                                    return EmployeeRoles.MANAGER.getNumericValue();
+                                case "HEAD_OF_ADMINISTRATION":
+                                    return EmployeeRoles.HEAD_OF_ADMINISTRATION.getNumericValue();
                             }
-                            return EmployeeRoles.EMPLOYEE.ordinal();
+                            return EmployeeRoles.EMPLOYEE.getNumericValue();
                         }).collect(Collectors.toList())
                 );
                 if (employeesRepository.findByKeycloakId(employee.getKeycloakId()) != null) {

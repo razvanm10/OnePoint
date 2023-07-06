@@ -32,12 +32,10 @@ class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
-
         http.authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
             authorizationManagerRequestMatcherRegistry.mvcMatchers(HttpMethod.OPTIONS, "**")
                     .permitAll();
-                    authorizationManagerRequestMatcherRegistry.anyRequest().authenticated();
+            authorizationManagerRequestMatcherRegistry.anyRequest().authenticated();
 
         });
 

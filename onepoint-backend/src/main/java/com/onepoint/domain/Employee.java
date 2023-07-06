@@ -1,7 +1,7 @@
 package com.onepoint.domain;
 
 import com.onepoint.enums.EmployeePositions;
-import com.onepoint.enums.EmployeeRoles;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.util.List;
@@ -25,19 +25,37 @@ public class Employee {
     @ElementCollection
     private List<Integer> roles;
 
-    @Column
-    private EmployeePositions position;
+    @ElementCollection
+    @Nullable
+    private List<EmployeePositions> fittablePositions;
 
     @Column
-    private Integer managerId;
+    @Nullable
+    private EmployeePositions currentPosition;
+
+    public void setManagerId(@Nullable Long managerId) {
+        this.managerId = managerId;
+    }
+
+    @Column
+    @Nullable
+    private Long managerId;
+
+    @ManyToOne
+    @JoinColumn(name = "team_id")
+    private Team team;
 
     public Employee(){};
 
-    public Employee(Long id, String name, UUID keycloakId, List<Integer> roles) {
+    public Employee(Long id, String name, UUID keycloakId, List<Integer> roles, @Nullable List<EmployeePositions> fittablePositions, @Nullable EmployeePositions currentPosition, @Nullable Long managerId, Team team) {
         this.id = id;
         this.name = name;
         this.keycloakId = keycloakId;
         this.roles = roles;
+        this.fittablePositions = fittablePositions;
+        this.currentPosition = currentPosition;
+        this.managerId = managerId;
+        this.team = team;
     }
 
     public Long getId() {
@@ -72,35 +90,43 @@ public class Employee {
         this.roles = roles;
     }
 
-    public Integer getManagerId() {
-        return managerId;
+    @Nullable
+    public List<EmployeePositions> getFittablePositions() {
+        return fittablePositions;
     }
 
-    public void setManagerId(Integer managerId) {
-        this.managerId = managerId;
+    public void setFittablePositions(@Nullable List<EmployeePositions> fittablePositions) {
+        this.fittablePositions = fittablePositions;
     }
 
-    public EmployeePositions getPosition() {
-        return position;
+    @Nullable
+    public EmployeePositions getCurrentPosition() {
+        return currentPosition;
     }
 
-    public void setPosition(EmployeePositions position) {
-        this.position = position;
+    public void setCurrentPosition(@Nullable EmployeePositions currentPosition) {
+        this.currentPosition = currentPosition;
     }
 
+    public Team getTeam() {
+        return team;
+    }
 
+    public void setTeam(Team team) {
+        this.team = team;
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Employee employee = (Employee) o;
-        return Objects.equals(id, employee.id) && Objects.equals(name, employee.name) && Objects.equals(keycloakId, employee.keycloakId) && Objects.equals(roles, employee.roles) && position == employee.position;
+        return Objects.equals(id, employee.id) && Objects.equals(name, employee.name) && Objects.equals(keycloakId, employee.keycloakId) && Objects.equals(roles, employee.roles) && Objects.equals(fittablePositions, employee.fittablePositions) && currentPosition == employee.currentPosition && Objects.equals(managerId, employee.managerId) && Objects.equals(team, employee.team);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, keycloakId, roles, position);
+        return Objects.hash(id, name, keycloakId, roles, fittablePositions, currentPosition, managerId, team);
     }
 
     @Override
@@ -110,7 +136,12 @@ public class Employee {
                 ", name='" + name + '\'' +
                 ", keycloakId=" + keycloakId +
                 ", roles=" + roles +
-                ", position=" + position +
+                ", fittablePositions=" + fittablePositions +
+                ", currentPosition=" + currentPosition +
+                ", managerId=" + managerId +
+                ", team=" + team +
                 '}';
     }
+
+
 }

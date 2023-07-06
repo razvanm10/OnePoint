@@ -22,8 +22,12 @@ public class EmployeeDTO {
 
     private List<Integer> roles;
 
-    private Integer position;
+    private List<Integer> fittablePositions;
+
+    private Integer currentPosition;
 
     private Integer managerId;
+
+    private Long teamId;
 
 }
